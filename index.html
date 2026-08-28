@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="teal">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HHC MIS & HR — Management Information System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ THEME TOKENS ============ */
+:root{
+  --accent:#0891b2; --accent-dark:#0d4f56; --accent-deep:#0a3236; --accent-light:#e6fbfd; --accent-mid:#0e7490;
+  --ink:#0f172a; --ink-soft:#475569; --ink-faint:#94a3b8;
+  --bg:#eef4f6; --panel:#ffffff; --line:#e2e8f0; --line-soft:#eef2f5;
+  --good:#059669; --bad:#dc2626; --warn:#d97706;
+  --radius:14px; --radius-sm:9px;
+  --font-display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html[data-theme="teal"]{--accent:#0891b2;--accent-dark:#0d4f56;--accent-deep:#0a3236;--accent-light:#e6fbfd;--accent-mid:#0e7490;}
+html[data-theme="indigo"]{--accent:#6366f1;--accent-dark:#332f8a;--accent-deep:#211e5c;--accent-light:#eef0ff;--accent-mid:#4f46e5;}
+html[data-theme="ocean"]{--accent:#2563eb;--accent-dark:#173e8f;--accent-deep:#0f2a63;--accent-light:#eaf1ff;--accent-mid:#1d4ed8;}
+html[data-theme="emerald"]{--accent:#059669;--accent-dark:#08543f;--accent-deep:#06392c;--accent-light:#e7fbf3;--accent-mid:#047857;}
+html[data-theme="amber"]{--accent:#d97706;--accent-dark:#7a4405;--accent-deep:#552f04;--accent-light:#fff6e6;--accent-mid:#b45309;}
+html[data-theme="charcoal"]{--accent:#b8952e;--accent-dark:#3a3a3d;--accent-deep:#252527;--accent-light:#faf7ec;--accent-mid:#8a7024;}
+html[data-theme="royal"]{--accent:#7c3aed;--accent-dark:#41207e;--accent-deep:#2b1554;--accent-light:#f4eeff;--accent-mid:#6d28d9;}
+html[data-theme="crimson"]{--accent:#dc2626;--accent-dark:#761515;--accent-deep:#4e0e0e;--accent-light:#fef0f0;--accent-mid:#b91c1c;}
+html[data-theme="slate"]{--accent:#475569;--accent-dark:#242e3b;--accent-deep:#161d26;--accent-light:#f1f4f7;--accent-mid:#334155;}
+html[data-theme="mono"]{--accent:#18181b;--accent-dark:#000000;--accent-deep:#000000;--accent-light:#f4f4f5;--accent-mid:#111114;}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:var(--font-display); color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased; overflow:hidden; height:100vh;}
+img,svg{display:block;}
+button{font-family:inherit; cursor:pointer;}
+.mono{font-family:var(--font-mono);}
+::selection{background:var(--accent); color:#fff;}
+
+@media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+/* ============ LOGIN VIEW ============ */
+#loginView{min-height:100vh; height:100vh; display:grid; grid-template-columns:1.15fr 1fr; overflow-y:auto;}
+@media (max-width:900px){#loginView{grid-template-columns:1fr; height:auto; min-height:100vh;}}
+.hero-left{background:
+    radial-gradient(circle at 15% 15%, rgba(255,255,255,.08), transparent 40%),
+    linear-gradient(160deg,var(--accent-deep),var(--accent-dark) 55%, var(--accent-mid));
+  color:#fff; padding:56px 60px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden;}
+.hero-left::before{content:""; position:absolute; inset:0; background-image:
+   linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+   linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+   background-size:34px 34px; opacity:.5; pointer-events:none;}
+.hero-topline{display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1;}
+.badge-pill{display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); padding:7px 14px; border-radius:99px; font-size:12.5px; font-weight:600; letter-spacing:.03em;}
+.dot{width:7px; height:7px; border-radius:50%; background:#34d399; box-shadow:0 0 0 3px rgba(52,211,153,.25);}
+.hero-version{font-family:var(--font-mono); font-size:12px; color:rgba(255,255,255,.55); letter-spacing:.04em;}
+.hero-mid{position:relative; z-index:1; margin:40px 0;}
+.eyebrow{font-size:12.5px; font-weight:700; letter-spacing:.14em; color:#fbbf24; text-transform:uppercase; margin-bottom:14px;}
+.hero-h1{font-size:clamp(34px,4vw,48px); font-weight:800; line-height:1.08; letter-spacing:-0.02em; margin-bottom:18px;}
+.hero-sub{font-size:16px; line-height:1.6; color:rgba(255,255,255,.72); max-width:440px;}
+.hero-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; position:relative; z-index:1;}
+.hero-stat{background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.14); border-radius:var(--radius-sm); padding:16px;}
+.hero-stat-label{font-size:10.5px; font-weight:700; letter-spacing:.09em; color:rgba(255,255,255,.55); text-transform:uppercase; margin-bottom:8px;}
+.hero-stat-val{font-size:14.5px; font-weight:600; line-height:1.4; color:#fff;}
+.hero-foot{display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; padding-top:26px; margin-top:26px; border-top:1px solid rgba(255,255,255,.14); font-size:12px; color:rgba(255,255,255,.5);}
+.hero-foot span{display:inline-flex; align-items:center; gap:6px;}
+
+.hero-right{background:var(--bg); display:flex; align-items:center; justify-content:center; padding:40px;}
+.login-card{background:var(--panel); width:100%; max-width:400px; border-radius:20px; padding:34px 32px; box-shadow:0 20px 50px -20px rgba(15,23,42,.18); border:1px solid var(--line);}
+.login-tags{display:flex; justify-content:space-between; margin-bottom:20px;}
+.tag{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; color:var(--accent-mid); background:var(--accent-light); padding:5px 10px; border-radius:99px;}
+.login-card h1{font-size:23px; font-weight:800; letter-spacing:-.01em; margin-bottom:6px;}
+.login-card p{font-size:13.5px; color:var(--ink-soft); margin-bottom:24px;}
+.field{margin-bottom:18px;}
+.field label{display:block; font-size:11px; font-weight:700; letter-spacing:.07em; color:var(--ink-soft); margin-bottom:8px; text-transform:uppercase;}
+.input-wrap{position:relative;}
+.input-wrap svg{position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--ink-faint);}
+.input-wrap input{width:100%; padding:12px 14px 12px 38px; border:1.5px solid var(--line); border-radius:10px; font-size:14px; background:#fbfcfd; color:var(--ink); outline:none; transition:border-color .15s;}
+.input-wrap input:focus{border-color:var(--accent);}
+.input-wrap.eye input{padding-right:38px;}
+.input-wrap .eye-btn{left:auto; right:13px; cursor:pointer;}
+.forgot{display:block; text-align:right; font-size:12.5px; color:var(--accent-mid); font-weight:600; text-decoration:none; margin:-8px 0 20px;}
+.btn-primary{width:100%; background:var(--accent-deep); color:#fff; border:none; border-radius:10px; padding:14px; font-size:14.5px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .15s, background .15s;}
+.btn-primary:hover{background:var(--accent-dark); transform:translateY(-1px);}
+.login-status{display:flex; align-items:center; justify-content:center; gap:6px; font-size:12px; font-weight:600; color:var(--good); margin:18px 0 6px;}
+.login-copy{text-align:center; font-size:11.5px; color:var(--ink-faint);}
+
+/* ============ APP VIEW (fixed header + fixed sidebar, per-page content) ============ */
+#appView{display:none; height:100vh;}
+#appView.active{display:flex;}
+.sidebar{width:250px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--line); height:100vh; display:flex; flex-direction:column; z-index:30;}
+.sidebar-head{display:flex; align-items:center; gap:10px; padding:20px; border-bottom:1px solid var(--line-soft); flex-shrink:0;}
+.logo-mark{width:34px; height:34px; border-radius:9px; background:var(--accent); display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
+.logo-text{font-size:15px; font-weight:800; letter-spacing:-.01em; line-height:1.15;}
+.nav-list{flex:1; padding:14px 12px; overflow-y:auto;}
+.nav-item{display:flex; align-items:center; gap:12px; width:100%; padding:11px 14px; border:none; background:transparent; border-radius:9px; font-size:13.5px; font-weight:600; color:var(--ink-soft); margin-bottom:2px; text-align:left; transition:background .15s,color .15s;}
+.nav-item svg{flex-shrink:0; opacity:.85;}
+.nav-item:hover{background:var(--line-soft); color:var(--ink);}
+.nav-item.active{background:var(--accent); color:#fff;}
+.nav-item.active svg{opacity:1;}
+.nav-item .soon{margin-left:auto; font-size:9px; font-weight:800; letter-spacing:.04em; background:var(--bad); color:#fff; padding:3px 6px; border-radius:5px;}
+.sidebar-foot{border-top:1px solid var(--line-soft); padding:14px 16px; display:flex; flex-direction:column; gap:2px; flex-shrink:0;}
+.sidebar-foot .logout{display:flex; align-items:center; gap:10px; padding:9px 6px; font-size:13px; font-weight:600; color:var(--ink-soft); border:none; background:none; width:100%; border-radius:8px;}
+.sidebar-foot .logout:hover{background:var(--line-soft);}
+.user-chip{display:flex; align-items:center; gap:10px; padding:8px 6px;}
+.avatar{width:34px; height:34px; border-radius:50%; background:var(--accent-mid); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;}
+.user-chip .who b{display:block; font-size:12.5px; font-weight:700;}
+.user-chip .who span{font-size:10.5px; color:var(--ink-faint);}
+
+.main-col{flex:1; min-width:0; display:flex; flex-direction:column; height:100vh;}
+.topbar{flex-shrink:0; background:#fff; border-bottom:1px solid var(--line); padding:14px 32px; display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; z-index:25;}
+.page-heading{font-size:16px; font-weight:800; display:flex; align-items:center; gap:9px;}
+.topbar-right{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+
+.dropdown{position:relative;}
+.tb-pill{display:flex; align-items:center; gap:7px; padding:9px 13px; border:1.5px solid var(--line); border-radius:10px; font-size:12.5px; font-weight:600; color:var(--ink); background:#fff;}
+.tb-pill svg{color:var(--ink-faint); flex-shrink:0;}
+.tb-pill.filters{border-color:var(--accent); color:var(--accent-mid);}
+.tb-pill .chev{transition:transform .15s;}
+.dropdown.open .tb-pill .chev{transform:rotate(180deg);}
+.dropdown-panel{position:absolute; top:calc(100% + 8px); right:0; min-width:220px; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 16px 40px -12px rgba(15,23,42,.22); padding:8px; display:none; z-index:50;}
+.dropdown.open .dropdown-panel{display:block;}
+.dd-option{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 11px; border-radius:8px; font-size:13px; font-weight:600; color:var(--ink-soft); border:none; background:none; width:100%; text-align:left;}
+.dd-option:hover{background:var(--line-soft); color:var(--ink);}
+.dd-option.sel{background:var(--accent-light); color:var(--accent-mid);}
+.dd-option .ck{width:14px; height:14px; opacity:0;}
+.dd-option.sel .ck{opacity:1;}
+.dd-panel-wide{min-width:280px;}
+.dd-check-row{display:flex; align-items:center; gap:9px; padding:8px 10px; font-size:13px; font-weight:600;}
+.dd-check-row input{width:15px; height:15px; accent-color:var(--accent);}
+.dd-label{font-size:10.5px; font-weight:700; letter-spacing:.06em; color:var(--ink-faint); text-transform:uppercase; padding:8px 10px 4px;}
+.dd-actions{display:flex; gap:8px; padding:10px 6px 2px; border-top:1px solid var(--line-soft); margin-top:6px;}
+.dd-actions button{flex:1; padding:8px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid var(--line); background:#fff;}
+.dd-actions .apply{background:var(--accent); color:#fff; border-color:var(--accent);}
+
+.tb-profile{display:flex; align-items:center; gap:9px; padding:6px 12px 6px 6px; border-radius:11px; background:var(--accent-light);}
+.tb-profile .who b{display:block; font-size:12.5px; font-weight:700;}
+.tb-profile .who span{font-size:10.5px; color:var(--accent-mid); font-weight:600;}
+
+.page-scroll{flex:1; overflow-y:auto;}
+.page{display:none; padding:30px 32px 60px; animation:pgFade .35s ease;}
+.page.active{display:block;}
+@keyframes pgFade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+.section-head{display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin-bottom:22px; flex-wrap:wrap;}
+.section-title-row{display:flex; align-items:center; gap:12px;}
+.icon-chip{width:38px; height:38px; border-radius:10px; background:var(--accent-light); color:var(--accent-mid); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.section-title{font-size:22px; font-weight:800; letter-spacing:-.01em; display:flex; align-items:center; gap:10px;}
+.count-badge{background:var(--accent-light); color:var(--accent-mid); font-size:12px; font-weight:700; padding:3px 10px; border-radius:99px;}
+.section-sub{font-size:13px; color:var(--ink-soft); margin-top:2px;}
+.btn-accent{background:var(--accent); color:#fff; border:none; border-radius:9px; padding:11px 18px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:7px; transition:filter .15s;}
+.btn-accent:hover{filter:brightness(.92);}
+.search-box{display:flex; align-items:center; gap:8px; border:1.5px solid var(--line); border-radius:9px; padding:10px 13px; background:#fff; font-size:13px; color:var(--ink-faint); min-width:230px;}
+.search-box svg{flex-shrink:0;}
+.search-box input{border:none; outline:none; font-size:13px; width:100%; font-family:inherit; background:transparent; color:var(--ink);}
+
+.stat-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:22px;}
+@media (max-width:1100px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:var(--radius-sm); padding:16px 18px;}
+.stat-card.c-good{border-left-color:var(--good);}
+.stat-card.c-bad{border-left-color:var(--bad);}
+.stat-card.c-purple{border-left-color:#7c3aed;}
+.stat-label{font-size:10.5px; font-weight:700; letter-spacing:.07em; color:var(--ink-faint); text-transform:uppercase; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;}
+.stat-tag{background:#ede9fe; color:#7c3aed; font-size:9px; font-weight:800; padding:2px 7px; border-radius:99px; letter-spacing:.03em;}
+.stat-val{font-size:23px; font-weight:800; letter-spacing:-.01em;}
+.stat-val.good{color:var(--good);} .stat-val.bad{color:var(--bad);}
+.stat-note{font-size:11px; color:var(--ink-faint); margin-top:4px;}
+
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px;}
+.panel h3{font-size:15px; font-weight:700; margin-bottom:3px;}
+.panel .desc{font-size:12px; color:var(--ink-soft); margin-bottom:16px;}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+@media (max-width:900px){.two-col{grid-template-columns:1fr;} .stat-grid{grid-template-columns:repeat(2,1fr);}}
+
+.rank-row{display:flex; align-items:center; gap:12px; padding:12px 10px; border-radius:8px;}
+.rank-row:nth-child(odd){background:var(--line-soft);}
+.rank-badge{width:24px; height:24px; border-radius:6px; background:#fde68a; color:#78350f; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.rank-badge.b2{background:#bbf7d0; color:#065f46;} .rank-badge.b3{background:#e0e7ff; color:#3730a3;}
+.rank-row .name{flex:1; font-size:13.5px; font-weight:700;}
+.rank-row .pct{font-size:11.5px; color:var(--ink-faint); margin-right:14px;}
+.rank-row .cnt{font-size:13.5px; font-weight:700;}
+
+.cost-row{margin-bottom:18px;}
+.cost-row .lbl{display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; margin-bottom:7px;}
+.bar-track{height:9px; background:var(--line-soft); border-radius:99px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:99px;}
+.bar-fill.green{background:var(--good);} .bar-fill.red{background:var(--bad);}
+
+.kv-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 40px;}
+.kv-row{display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line-soft); font-size:13px;}
+.kv-row .k{color:var(--ink-soft); font-weight:600; letter-spacing:.03em; text-transform:uppercase; font-size:11px;}
+.kv-row .v{font-weight:700;}
+
+.chart-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:900px){.chart-grid{grid-template-columns:1fr;}}
+.chart-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+.chart-head h4{font-size:14px; font-weight:700;}
+.legend{display:flex; gap:14px; font-size:11.5px; font-weight:600; color:var(--ink-soft);}
+.legend span{display:inline-flex; align-items:center; gap:5px;}
+.legend i{width:8px; height:8px; border-radius:50%; display:inline-block;}
+.bars{display:flex; align-items:flex-end; gap:6px; height:180px; padding-top:10px;}
+.bars .mgroup{flex:1; display:flex; align-items:flex-end; justify-content:center; gap:3px; height:100%; position:relative;}
+.bars .mgroup .b{width:9px; border-radius:3px 3px 0 0;}
+.bars .mlabel{position:absolute; bottom:-22px; left:0; right:0; text-align:center; font-size:9.5px; color:var(--ink-faint); font-weight:600;}
+.bars-wrap{position:relative; margin-bottom:24px;}
+
+.table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:var(--panel);}
+table{width:100%; border-collapse:collapse; font-size:13px; min-width:760px;}
+thead th{text-align:right; font-size:10.5px; font-weight:700; letter-spacing:.05em; color:var(--ink-faint); text-transform:uppercase; padding:13px 16px; background:var(--line-soft); white-space:nowrap; border-bottom:1px solid var(--line);}
+thead th:first-child, thead th:nth-child(2){text-align:left;}
+tbody td{padding:13px 16px; text-align:right; border-bottom:1px solid var(--line-soft); white-space:nowrap;}
+tbody td:first-child, tbody td:nth-child(2){text-align:left;}
+tbody tr.compact td{padding:8px 16px;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr.group-row{background:var(--accent-light); cursor:pointer; font-weight:700;}
+tbody tr.group-row:hover{filter:brightness(.97);}
+tbody tr.group-row .exp-icon{display:inline-block; transition:transform .2s; margin-right:6px; color:var(--accent-mid);}
+tbody tr.group-row.open .exp-icon{transform:rotate(90deg);}
+tbody tr.sub-row{display:none;}
+tbody tr.sub-row.open{display:table-row;}
+tbody tr.total-row{background:var(--accent-light); font-weight:800;}
+.badge-unit{font-size:10.5px; font-weight:700; color:var(--ink-faint); margin-left:6px;}
+.pos{color:var(--good); font-weight:700;} .neg{color:var(--bad); font-weight:700;}
+.tabs{display:inline-flex; background:var(--line-soft); border-radius:10px; padding:4px; gap:2px;}
+.tab-btn{border:none; background:transparent; padding:9px 18px; font-size:12.5px; font-weight:700; border-radius:8px; color:var(--ink-soft);}
+.tab-btn.active{background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.table-toolbar{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+.table-meta{display:flex; align-items:center; gap:8px; padding:12px 16px; background:var(--panel); border:1px solid var(--line); border-radius:10px; font-size:13px; margin-bottom:14px;}
+.table-meta b{font-weight:800;}
+.table-foot{display:flex; justify-content:space-between; align-items:center; padding:14px 18px; font-size:12.5px; color:var(--ink-soft); border-top:1px solid var(--line);}
+.pager{display:flex; gap:6px; align-items:center;}
+.pager button{width:26px; height:26px; border-radius:6px; border:1px solid var(--line); background:#fff; font-size:12px; color:var(--ink-faint);}
+.pager .cur{background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700;}
+
+.report-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media (max-width:900px){.report-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:640px){.report-grid{grid-template-columns:1fr;}}
+.report-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px; position:relative; display:flex; flex-direction:column;}
+.report-card .r-icon{width:38px; height:38px; border-radius:10px; background:var(--accent-light); color:var(--accent-mid); display:flex; align-items:center; justify-content:center; margin-bottom:14px;}
+.report-card.disabled .r-icon{background:var(--line-soft); color:var(--ink-faint);}
+.report-card h4{font-size:14.5px; font-weight:700; margin-bottom:6px;}
+.report-card p{font-size:12px; color:var(--ink-soft); line-height:1.5; margin-bottom:16px; flex:1;}
+.soon-tag{position:absolute; top:18px; right:18px; font-size:9.5px; font-weight:800; color:var(--ink-faint); background:var(--line-soft); padding:4px 9px; border-radius:99px; letter-spacing:.03em;}
+.rep-btn{width:100%; border:none; border-radius:9px; padding:11px; font-size:12.5px; font-weight:700; text-align:center;}
+.rep-btn.on{background:var(--accent); color:#fff;}
+.rep-btn.off{background:var(--line-soft); color:var(--ink-faint); cursor:not-allowed;}
+
+.account-band{background:linear-gradient(120deg,var(--accent-mid),var(--accent)); color:#fff; border-radius:var(--radius); padding:26px 28px; margin-bottom:22px;}
+.account-band .a-head{display:flex; align-items:center; gap:9px; margin-bottom:5px; font-weight:700; font-size:15px;}
+.account-band .a-sub{font-size:12.5px; color:rgba(255,255,255,.75); margin-bottom:20px;}
+.account-main{display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+.big-avatar{width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px;}
+.account-main .nm{font-size:17px; font-weight:800; display:flex; align-items:center; gap:9px;}
+.role-pill{font-size:10px; font-weight:800; background:rgba(255,255,255,.2); padding:3px 8px; border-radius:6px;}
+.account-main .role{font-size:12.5px; color:rgba(255,255,255,.78); font-weight:600; letter-spacing:.02em;}
+.account-facts{display:flex; gap:44px; margin-left:auto; flex-wrap:wrap;}
+.account-facts div span{display:block; font-size:10px; font-weight:700; letter-spacing:.06em; color:rgba(255,255,255,.6); text-transform:uppercase; margin-bottom:5px;}
+.account-facts div b{font-size:13.5px; font-weight:700;}
+
+.opt-toggle{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;}
+.opt-btn{border:2px solid var(--line); background:#fbfcfd; border-radius:10px; padding:13px; text-align:left; font-size:13.5px; font-weight:700; display:flex; align-items:center; justify-content:space-between;}
+.opt-btn small{display:block; font-weight:600; color:var(--ink-faint); font-size:11px; margin-top:3px;}
+.opt-btn.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+.opt-btn.on small{color:rgba(255,255,255,.75);}
+.preview-row{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--accent-light); border-radius:9px; font-size:12px; font-weight:700; color:var(--ink-soft);}
+.preview-row b{font-size:15px; color:var(--ink); font-weight:800;}
+.density-preview{display:flex; flex-direction:column; gap:8px;}
+.density-preview .db{height:8px; background:var(--accent-light); border-radius:99px;}
+
+.landing-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.landing-card{border:2px solid var(--line); border-radius:10px; padding:13px 14px; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; background:#fff; position:relative;}
+.landing-card svg{color:var(--accent-mid);}
+.landing-card.on{border-color:var(--accent); background:var(--accent-light);}
+.landing-card .check{position:absolute; right:12px; width:16px; height:16px; border-radius:50%; background:var(--accent); color:#fff; display:none; align-items:center; justify-content:center;}
+.landing-card.on .check{display:flex;}
+
+.switch-row{display:flex; align-items:center; justify-content:space-between; padding:13px 15px; background:#fbfcfd; border:1.5px solid var(--line); border-radius:10px; font-size:13px; font-weight:600;}
+.switch{width:42px; height:24px; border-radius:99px; background:var(--line); position:relative; border:none; flex-shrink:0;}
+.switch::after{content:""; position:absolute; width:18px; height:18px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .18s; box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.switch.on{background:var(--accent);}
+.switch.on::after{left:21px;}
+
+.theme-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:16px;}
+@media (max-width:1000px){.theme-grid{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:640px){.theme-grid{grid-template-columns:repeat(2,1fr);}}
+.theme-card{border:2px solid var(--line); border-radius:12px; padding:14px; background:#fff; text-align:left; position:relative; transition:border-color .15s, transform .15s;}
+.theme-card:hover{transform:translateY(-2px);}
+.theme-card.on{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-light);}
+.theme-dots{display:flex; gap:5px; margin-bottom:10px;}
+.theme-dots i{width:14px; height:14px; border-radius:50%; display:block;}
+.theme-card h5{font-size:13px; font-weight:700; margin-bottom:3px;}
+.theme-card p{font-size:10.5px; color:var(--ink-soft); line-height:1.4;}
+.theme-card .check2{position:absolute; top:12px; right:12px; width:18px; height:18px; border-radius:50%; background:var(--accent); color:#fff; align-items:center; justify-content:center; display:none;}
+.theme-card.on .check2{display:flex;}
+
+.page-foot{text-align:center; padding:22px 0 4px; font-size:11px; color:var(--ink-faint);}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN VIEW ============ -->
+<div id="loginView">
+  <div class="hero-left">
+    <div class="hero-topline">
+      <span class="badge-pill"><span class="dot"></span> DIRECTOR PORTAL</span>
+      <span class="hero-version">MIS · v1.0.1</span>
+    </div>
+    <div class="hero-mid">
+      <div class="eyebrow">Management Information System</div>
+      <h1 class="hero-h1">Dynamic Reports,<br>One Unified View</h1>
+      <p class="hero-sub">Live dashboards, scheduled exports and real-time data refresh — consolidated for executive decision-making.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-label">Reports Generated</div><div class="hero-stat-val">Automated reports across all departments.</div></div>
+      <div class="hero-stat"><div class="hero-stat-label">Scheduled Exports</div><div class="hero-stat-val">Exports run automatically on schedule.</div></div>
+      <div class="hero-stat"><div class="hero-stat-label">Data Refresh</div><div class="hero-stat-val">Dashboards stay synced in real time.</div></div>
+    </div>
+    <div class="hero-foot">
+      <span>&#128274; Encrypted session</span>
+      <span class="mono">Build 2026.08.04</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="login-card">
+      <div class="login-tags">
+        <span class="tag">&#128737; Secure Access</span>
+        <span class="tag">&#9989; encrypted session</span>
+      </div>
+      <h1>Director Sign In</h1>
+      <p>Enter your credentials to access the management console.</p>
+      <div class="field">
+        <label>Employee ID</label>
+        <div class="input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+          <input type="text" placeholder="e.g. 10045821">
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap eye">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+          <input type="password" placeholder="Enter your password">
+          <svg class="eye-btn" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <a class="forgot" href="#">Forgot password?</a>
+      <button class="btn-primary" onclick="goToApp()">
+        Sign In
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+      <div class="login-status">&#9679; All systems operational</div>
+      <div class="login-copy">© 2026 Management Information System. All Rights Reserved.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP VIEW ============ -->
+<div id="appView">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 11-9-9v9z"/><path d="M21 12A9 9 0 0012 3v9z" opacity=".55"/></svg>
+      </div>
+      <div class="logo-text">HHC MIS &amp; HR</div>
+    </div>
+    <nav class="nav-list" id="navList">
+      <button class="nav-item active" data-page="overview">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Overview
+      </button>
+      <button class="nav-item" data-page="payable">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        Payable Summary
+      </button>
+      <button class="nav-item" data-page="joinexit">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+        Join &amp; Exit
+      </button>
+      <button class="nav-item" data-page="reports">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H7v-4h2m4 4h-2V9h2m4 8h-2v-6h2M4 4h16v16H4z"/></svg>
+        Reports
+      </button>
+      <button class="nav-item" data-page="forecast">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        Forecast
+        <span class="soon">UPCOMING</span>
+      </button>
+      <button class="nav-item" data-page="settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+      </button>
+    </nav>
+    <div class="sidebar-foot">
+      <button class="logout" onclick="goToLogin()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        Logout
+      </button>
+      <div class="user-chip">
+        <div class="avatar">BR</div>
+        <div class="who"><b>Bhukya Rajender</b><span>Junior Software Engineer</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <div class="topbar">
+      <div class="page-heading" id="pageHeading">Overview</div>
+      <div class="topbar-right">
+
+        <div class="dropdown" id="ddDate">
+          <button class="tb-pill" onclick="toggleDD('ddDate')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span id="dateLabel">Jul 2026 (202607)</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="dropdown-panel">
+            <div class="dd-label">Pay Period</div>
+            <button class="dd-option sel" onclick="pickOption('ddDate','dateLabel',this,'Jul 2026 (202607)')">Jul 2026 (202607)<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddDate','dateLabel',this,'Jun 2026 (202606)')">Jun 2026 (202606)<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddDate','dateLabel',this,'May 2026 (202605)')">May 2026 (202605)<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddDate','dateLabel',this,'Apr 2026 (202604)')">Apr 2026 (202604)<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddDate','dateLabel',this,'Mar 2026 (202603)')">Mar 2026 (202603)<span class="ck">&#10003;</span></button>
+          </div>
+        </div>
+
+        <div class="dropdown" id="ddLoc">
+          <button class="tb-pill" onclick="toggleDD('ddLoc')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg><span id="locLabel">All Locations</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="dropdown-panel">
+            <div class="dd-label">Location</div>
+            <button class="dd-option sel" onclick="pickOption('ddLoc','locLabel',this,'All Locations')">All Locations<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddLoc','locLabel',this,'Hyderabad HQ')">Hyderabad HQ<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddLoc','locLabel',this,'Mumbai HQ')">Mumbai HQ<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddLoc','locLabel',this,'Consultant Network')">Consultant Network<span class="ck">&#10003;</span></button>
+            <button class="dd-option" onclick="pickOption('ddLoc','locLabel',this,'DIR')">DIR<span class="ck">&#10003;</span></button>
+          </div>
+        </div>
+
+        <div class="dropdown" id="ddFilters">
+          <button class="tb-pill filters" onclick="toggleDD('ddFilters')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>Filters<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="dropdown-panel dd-panel-wide">
+            <div class="dd-label">Employee Status</div>
+            <label class="dd-check-row"><input type="checkbox" checked> Active Employees</label>
+            <label class="dd-check-row"><input type="checkbox"> New Joiners Only</label>
+            <label class="dd-check-row"><input type="checkbox"> Exited Only</label>
+            <div class="dd-label">Employee Type</div>
+            <label class="dd-check-row"><input type="checkbox" checked> Permanent</label>
+            <label class="dd-check-row"><input type="checkbox" checked> Contract</label>
+            <label class="dd-check-row"><input type="checkbox"> Consultant</label>
+            <div class="dd-actions">
+              <button onclick="toggleDD('ddFilters')">Reset</button>
+              <button class="apply" onclick="toggleDD('ddFilters')">Apply</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tb-profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-mid)"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0114 0v1"/></svg>
+          <div class="who"><b>Bhukya Rajender</b><span>13431</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-scroll" id="pageScroll">
+
+      <!-- ===== OVERVIEW ===== -->
+      <section class="page active" id="page-overview">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label">Total Manpower</div><div class="stat-val">6,318</div><div class="stat-note">ALL · Pay Period 202607</div></div>
+          <div class="stat-card"><div class="stat-label">Total Net Payable</div><div class="stat-val">₹33.35 Cr</div><div class="stat-note">₹33,35,47,542 bank credit</div></div>
+          <div class="stat-card"><div class="stat-label">Total Actual Gross</div><div class="stat-val">₹36.51 Cr</div><div class="stat-note">₹36,51,13,691 gross</div></div>
+          <div class="stat-card c-bad"><div class="stat-label">Total Deductions</div><div class="stat-val bad">₹3.16 Cr</div><div class="stat-note">₹3,15,66,149</div></div>
+          <div class="stat-card c-purple"><div class="stat-label">Total CTC / Month <span class="stat-tag">APPROX</span></div><div class="stat-val good">₹32.15 Cr</div><div class="stat-note" style="font-style:italic">Including all annual components</div></div>
+        </div>
+
+        <div class="panel" style="margin-bottom:16px;">
+          <h3>Summary Breakdown</h3>
+          <div class="desc">Full pay period detail for the current filter selection</div>
+          <div class="kv-grid">
+            <div>
+              <div class="kv-row"><span class="k">FY Year</span><span class="v">2026-27</span></div>
+              <div class="kv-row"><span class="k">Pay Period</span><span class="v">202607</span></div>
+              <div class="kv-row"><span class="k">Business Unit</span><span class="v">All units</span></div>
+              <div class="kv-row"><span class="k">Group</span><span class="v">ALL</span></div>
+              <div class="kv-row"><span class="k">Manpower</span><span class="v">6,318</span></div>
+              <div class="kv-row" style="border-bottom:none;"><span class="k">TEDA</span><span class="v">₹6,99,65,211</span></div>
+            </div>
+            <div>
+              <div class="kv-row"><span class="k">Incentive</span><span class="v">₹67,51,491</span></div>
+              <div class="kv-row"><span class="k">Net Salary</span><span class="v">₹25,68,30,840</span></div>
+              <div class="kv-row"><span class="k">Total Net Payable</span><span class="v">₹33,35,47,542</span></div>
+              <div class="kv-row"><span class="k">Total Actual Gross</span><span class="v">₹36,51,13,691</span></div>
+              <div class="kv-row"><span class="k">Total Deductions</span><span class="v">₹3,15,66,149</span></div>
+              <div class="kv-row" style="border-bottom:none;"><span class="k">CTC / Month</span><span class="v">₹32,14,55,837</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="chart-head">
+            <div><h3 style="margin-bottom:2px;">Monthly Trends</h3><div class="desc" style="margin-bottom:0;">Expenditure and Staff movement, Jan – Dec (2026)</div></div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span class="tb-pill" style="border-color:var(--line);">HHC - GENX <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+              <button class="btn-accent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download chart</button>
+            </div>
+          </div>
+          <div class="chart-grid">
+            <div>
+              <div class="chart-head" style="margin-bottom:6px;"><h4>Expenditure &amp; CTC</h4><div class="legend"><span><i style="background:#f59e0b"></i>TEDA</span><span><i style="background:#3b82f6"></i>CTC / Month</span></div></div>
+              <div class="bars-wrap"><div class="bars" id="chartExpenditure"></div></div>
+            </div>
+            <div>
+              <div class="chart-head" style="margin-bottom:6px;"><h4>Joining &amp; Exit</h4><div class="legend"><span><i style="background:#34d399"></i>Join</span><span><i style="background:#fb7185"></i>Exit</span></div></div>
+              <div class="bars-wrap"><div class="bars" id="chartJoinExit"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="page-foot">HHC MIS &amp; HR · Overview</div>
+      </section>
+
+      <!-- ===== PAYABLE SUMMARY ===== -->
+      <section class="page" id="page-payable">
+        <div class="section-head">
+          <div class="section-title-row">
+            <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2H4a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V11"/><path d="M18 2l4 4-10 10H8v-4z"/></svg></div>
+            <div>
+              <div class="section-title">Payable Analytics</div>
+              <div class="section-sub">Detailed salary, gross, deductions, incentives and net payable</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-toolbar">
+          <div class="tabs">
+            <button class="tab-btn active" data-panel="payable-grouped">Grouped Summary</button>
+            <button class="tab-btn" data-panel="payable-individual">Individual Summary</button>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div class="search-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="Search business unit..."></div>
+            <button class="btn-accent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download Excel</button>
+          </div>
+        </div>
+
+        <div class="table-meta"><b>46</b>&nbsp;Business Units&nbsp; · &nbsp;<b>6,318</b>&nbsp;Employees&nbsp; · &nbsp;<b>₹33.35 Cr</b>&nbsp;Net Payable</div>
+
+        <div id="payable-grouped">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>HQ</th><th>Business Unit</th><th>Manpower</th><th>Incentive</th><th>Net Salary</th><th>Total Net Payable</th><th>Total Actual Gross</th><th>Total Deduction</th></tr></thead>
+              <tbody id="tbl-payable-grouped"></tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Showing 1–46 of 46 records</span>
+            <div class="pager"><button>&lt;</button><button class="cur">1</button><button>&gt;</button></div>
+          </div>
+        </div>
+
+        <div id="payable-individual" style="display:none;">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>HQ</th><th>Business Unit</th><th>Manpower</th><th>Incentive</th><th>Net Salary</th><th>Total Net Payable</th><th>Total Actual Gross</th><th>Total Deduction</th></tr></thead>
+              <tbody id="tbl-payable-individual"></tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Showing 1–7 of 46 records</span>
+            <div class="pager"><button>&lt;</button><button class="cur">1</button><button>&gt;</button></div>
+          </div>
+        </div>
+        <div class="page-foot">HHC MIS &amp; HR · Payable Summary</div>
+      </section>
+
+      <!-- ===== JOIN & EXIT ===== -->
+      <section class="page" id="page-joinexit">
+        <div class="section-head">
+          <div class="section-title-row">
+            <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg></div>
+            <div>
+              <div class="section-title">Workforce Intelligence <span class="count-badge">275</span></div>
+              <div class="section-sub">Pay Period 202607 · ALL</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-accent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download Excel</button>
+            <div class="search-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="Search business unit or department"></div>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label">Total Manpower</div><div class="stat-val">6,253</div></div>
+          <div class="stat-card c-good"><div class="stat-label">New Joiners</div><div class="stat-val good">+356</div></div>
+          <div class="stat-card c-bad"><div class="stat-label">Exits</div><div class="stat-val bad">-251</div></div>
+          <div class="stat-card c-good"><div class="stat-label">New Join CTC</div><div class="stat-val good">₹14.29 Cr</div></div>
+          <div class="stat-card c-bad"><div class="stat-label">Left CTC</div><div class="stat-val bad">₹9.07 Cr</div></div>
+        </div>
+        <div class="stat-grid" style="grid-template-columns:1fr; margin-bottom:22px;">
+          <div class="stat-card c-purple" style="max-width:220px;"><div class="stat-label">Business Units</div><div class="stat-val">36</div></div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <h3>Manpower by HQ</h3>
+            <div class="desc">Ranked by headcount · current page</div>
+            <div class="rank-row"><div class="rank-badge">1</div><div class="name">Mumbai HQ</div><div class="pct">69.3%</div><div class="cnt">4,331</div></div>
+            <div class="rank-row"><div class="rank-badge b2">2</div><div class="name">Hyderabad HQ</div><div class="pct">30.6%</div><div class="cnt">1,916</div></div>
+            <div class="rank-row"><div class="rank-badge b3">3</div><div class="name">DIR</div><div class="pct">0.1%</div><div class="cnt">6</div></div>
+          </div>
+          <div class="panel">
+            <h3>Cost Overview</h3>
+            <div class="desc">New joiner CTC vs. exit CTC</div>
+            <div class="cost-row"><div class="lbl"><span>New Join CTC</span><b>₹14.29 Cr</b></div><div class="bar-track"><div class="bar-fill green" style="width:61%"></div></div></div>
+            <div class="cost-row" style="margin-bottom:0;"><div class="lbl"><span>Left CTC</span><b>₹9.07 Cr</b></div><div class="bar-track"><div class="bar-fill red" style="width:39%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="panel" style="padding:0; overflow:hidden;">
+          <div style="padding:22px 22px 0;">
+            <div class="table-toolbar" style="margin-bottom:14px;">
+              <div>
+                <h3 style="margin-bottom:2px;">HQ &amp; Department-wise Manpower</h3>
+                <div class="desc" style="margin-bottom:0;">Grouped by HQ — click a row to expand business units &amp; departments</div>
+              </div>
+              <div class="tabs">
+                <button class="tab-btn active" data-panel="je-grouped">Grouped Summary</button>
+                <button class="tab-btn" data-panel="je-individual">Individual Summary</button>
+              </div>
+            </div>
+          </div>
+          <div id="je-grouped">
+            <div class="table-wrap" style="border:none; border-radius:0; border-top:1px solid var(--line);">
+              <table>
+                <thead><tr><th>HQ / Business Unit</th><th>Department</th><th>Total Employees</th><th>New Joiners</th><th>Left Employees</th><th>Net Change</th><th>New Join CTC</th><th>Left CTC</th></tr></thead>
+                <tbody id="tbl-je-grouped"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="je-individual" style="display:none;">
+            <div class="table-wrap" style="border:none; border-radius:0; border-top:1px solid var(--line);">
+              <table>
+                <thead><tr><th>HQ</th><th>Business Unit / Department</th><th>Total Employees</th><th>New Joiners</th><th>Left Employees</th><th>Net Change</th><th>New Join CTC</th><th>Left CTC</th></tr></thead>
+                <tbody id="tbl-je-individual"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-foot"><span>Showing 1–275 of 275 records</span><div class="pager"><button>&lt;</button><button class="cur">1</button><button>&gt;</button></div></div>
+        </div>
+        <div class="page-foot">HHC MIS &amp; HR · Join &amp; Exit</div>
+      </section>
+
+      <!-- ===== REPORTS ===== -->
+      <section class="page" id="page-reports">
+        <div class="section-head">
+          <div><div class="section-title">Reports</div><div class="section-sub">Analytical report generation and export</div></div>
+        </div>
+        <div class="report-grid">
+          <div class="report-card">
+            <div class="r-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <h4>Master Report</h4>
+            <p>Full employee-level master data export for the applied filters.</p>
+            <button class="rep-btn on">Export Excel</button>
+          </div>
+          <div class="report-card disabled"><span class="soon-tag">COMING SOON</span>
+            <div class="r-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+            <h4>P&amp;L Report</h4>
+            <p>Revenue, expense and profitability statement for the applied filters.</p>
+            <button class="rep-btn off">Export Excel</button>
+          </div>
+          <div class="report-card disabled"><span class="soon-tag">COMING SOON</span>
+            <div class="r-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+            <h4>Organization Report</h4>
+            <p>Division, HQ business unit, department and team performance.</p>
+            <button class="rep-btn off">Export Excel</button>
+          </div>
+          <div class="report-card disabled"><span class="soon-tag">COMING SOON</span>
+            <div class="r-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <h4>Workforce Report</h4>
+            <p>Manpower, joiners, exits and department-wise headcount.</p>
+            <button class="rep-btn off">Export Excel</button>
+          </div>
+          <div class="report-card disabled"><span class="soon-tag">COMING SOON</span>
+            <div class="r-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></div>
+            <h4>Expense Report</h4>
+            <p>Category-wise expense breakdown including promotional and gifts.</p>
+            <button class="rep-btn off">Export Excel</button>
+          </div>
+          <div class="report-card disabled"><span class="soon-tag">COMING SOON</span>
+            <div class="r-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <h4>Payable Report</h4>
+            <p>Gross, deductions, incentives and net payable by business unit.</p>
+            <button class="rep-btn off">Export Excel</button>
+          </div>
+        </div>
+        <div class="page-foot">HHC MIS &amp; HR · Reports</div>
+      </section>
+
+      <!-- ===== FORECAST ===== -->
+      <section class="page" id="page-forecast">
+        <div class="panel" style="text-align:center; padding:60px 20px;">
+          <div class="icon-chip" style="margin:0 auto 16px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
+          <h3 style="font-size:18px; margin-bottom:8px;">Forecast — Coming Soon</h3>
+          <p style="font-size:13px; color:var(--ink-soft); max-width:400px; margin:0 auto;">Predictive headcount and cost modelling is on the roadmap. This module will unlock once released.</p>
+        </div>
+        <div class="page-foot">HHC MIS &amp; HR · Forecast</div>
+      </section>
+
+      <!-- ===== SETTINGS ===== -->
+      <section class="page" id="page-settings">
+        <div class="account-band">
+          <div class="a-head"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Account</div>
+          <div class="a-sub">Your profile details, as provided by HR.</div>
+          <div class="account-main">
+            <div class="big-avatar">BR</div>
+            <div>
+              <div class="nm">Bhukya Rajender <span class="role-pill">SA</span></div>
+              <div class="role">JUNIOR SOFTWARE ENGINEER</div>
+            </div>
+            <div class="account-facts">
+              <div><span>Employee ID</span><b>13431</b></div>
+              <div><span>Department</span><b>INFORMATION TECHNOLOGY</b></div>
+              <div><span>Business Unit</span><b>HHC - CORPORATE</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:16px;">
+          <h3>General Settings</h3>
+          <div class="desc">Fine-tune how numbers, tables and your workspace behave day to day.</div>
+          <div class="two-col" style="margin-bottom:0;">
+            <div>
+              <h4 style="font-size:13px; font-weight:700; margin-bottom:2px;">Number Format</h4>
+              <div class="desc" style="font-size:11.5px;">How amounts appear across every report</div>
+              <div class="opt-toggle">
+                <button class="opt-btn on" id="fmtIndian" onclick="setFormat('in')">Indian<small>₹ Cr / L</small></button>
+                <button class="opt-btn" id="fmtIntl" onclick="setFormat('intl')">International<small>₹ K / M / B</small></button>
+              </div>
+              <div class="preview-row"><span>PREVIEW</span><b id="fmtPreview">₹96.60 L</b></div>
+            </div>
+            <div>
+              <h4 style="font-size:13px; font-weight:700; margin-bottom:2px;">Table Density</h4>
+              <div class="desc" style="font-size:11.5px;">Row spacing on every data table</div>
+              <div class="opt-toggle">
+                <button class="opt-btn on" id="densComf" onclick="setDensity('comfortable')">Comfortable</button>
+                <button class="opt-btn" id="densComp" onclick="setDensity('compact')">Compact</button>
+              </div>
+              <div class="density-preview">
+                <div class="db" style="width:100%"></div><div class="db" style="width:70%"></div><div class="db" style="width:85%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <h3>Default Landing Page</h3>
+            <div class="desc">Where you land right after login</div>
+            <div class="landing-grid">
+              <button class="landing-card on" onclick="setLanding(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard<span class="check">&#10003;</span></button>
+              <button class="landing-card" onclick="setLanding(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Payable Analytics<span class="check">&#10003;</span></button>
+              <button class="landing-card" onclick="setLanding(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg>Workforce Intelligence<span class="check">&#10003;</span></button>
+              <button class="landing-card" onclick="setLanding(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>Forecast<span class="check">&#10003;</span></button>
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Browser Notifications</h3>
+            <div class="desc">Get alerted the moment new data lands</div>
+            <div class="switch-row"><span id="notifLabel">Notifications are off</span><button class="switch" id="notifSwitch" onclick="toggleNotif()"></button></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:16px;">
+          <h3>Appearance &amp; Theme</h3>
+          <div class="desc">Make your workspace truly yours with a variety of elegant, professionally designed themes.</div>
+          <div class="theme-grid" id="themeGrid"></div>
+        </div>
+        <div class="page-foot">HHC MIS &amp; HR · Settings</div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function el(tag, cls, html){ const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e; }
+
+/* ---------- view switching: login <-> app ---------- */
+function goToApp(){
+  document.getElementById('loginView').style.display = 'none';
+  const app = document.getElementById('appView');
+  app.classList.add('active');
+  showPage('overview');
+}
+function goToLogin(){
+  document.getElementById('appView').classList.remove('active');
+  document.getElementById('loginView').style.display = 'grid';
+}
+
+/* ---------- page switching within app ---------- */
+const pageTitles = {overview:'Overview', payable:'Payable Summary', joinexit:'Join & Exit', reports:'Reports', forecast:'Forecast', settings:'Settings'};
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.page===name));
+  document.getElementById('pageHeading').textContent = pageTitles[name] || '';
+  document.getElementById('pageScroll').scrollTop = 0;
+}
+document.querySelectorAll('.nav-item').forEach(btn=>{
+  btn.addEventListener('click', ()=> showPage(btn.dataset.page));
+});
+
+/* ---------- dropdown filters ---------- */
+function toggleDD(id){
+  const dd = document.getElementById(id);
+  const wasOpen = dd.classList.contains('open');
+  document.querySelectorAll('.dropdown').forEach(d=>d.classList.remove('open'));
+  if(!wasOpen) dd.classList.add('open');
+}
+function pickOption(ddId, labelId, btn, text){
+  document.getElementById(labelId).textContent = text;
+  btn.parentElement.querySelectorAll('.dd-option').forEach(o=>o.classList.remove('sel'));
+  btn.classList.add('sel');
+  toggleDD(ddId);
+}
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.dropdown')){
+    document.querySelectorAll('.dropdown').forEach(d=>d.classList.remove('open'));
+  }
+});
+
+/* ---------- tab toggles ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const group = btn.parentElement;
+    group.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const panels = btn.dataset.panel.startsWith('payable') ? ['payable-grouped','payable-individual'] : ['je-grouped','je-individual'];
+    panels.forEach(p=>{
+      document.getElementById(p).style.display = (p===btn.dataset.panel) ? 'block' : 'none';
+    });
+  });
+});
+
+/* ---------- Number format toggle ---------- */
+function setFormat(type){
+  document.getElementById('fmtIndian').classList.toggle('on', type==='in');
+  document.getElementById('fmtIntl').classList.toggle('on', type==='intl');
+  document.getElementById('fmtPreview').textContent = type==='in' ? '₹96.60 L' : '₹9.66 M';
+}
+function setDensity(mode){
+  document.getElementById('densComf').classList.toggle('on', mode==='comfortable');
+  document.getElementById('densComp').classList.toggle('on', mode==='compact');
+  document.querySelectorAll('tbody tr').forEach(tr=>tr.classList.toggle('compact', mode==='compact'));
+}
+function setLanding(btn){
+  btn.parentElement.querySelectorAll('.landing-card').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+}
+function toggleNotif(){
+  const sw = document.getElementById('notifSwitch');
+  const on = sw.classList.toggle('on');
+  document.getElementById('notifLabel').textContent = on ? 'Notifications are on' : 'Notifications are off';
+}
+
+/* ---------- Theme picker ---------- */
+const themes = [
+  {id:'indigo', name:'Indigo Violet', desc:'Deep indigo & violet — the default Corporate theme.', dots:['#4338ca','#818cf8','#c7d2fe']},
+  {id:'ocean', name:'Ocean Blue', desc:'Crisp blue & cyan — calm, corporate and clear.', dots:['#1d4ed8','#3b82f6','#93c5fd']},
+  {id:'emerald', name:'Emerald Green', desc:'Fresh green & teal — a growth-oriented, modern feel.', dots:['#047857','#10b981','#6ee7b7']},
+  {id:'amber', name:'Sunset Amber', desc:'Warm amber & orange — energetic and bold.', dots:['#b45309','#f59e0b','#fcd34d']},
+  {id:'charcoal', name:'Charcoal Gold', desc:'Understated charcoal with a premium gold accent.', dots:['#3a3a3d','#b8952e','#e8d9a8']},
+  {id:'royal', name:'Royal Purple', desc:'Rich purple & lilac — distinctive and premium.', dots:['#6d28d9','#a78bfa','#ddd6fe']},
+  {id:'crimson', name:'Crimson Red', desc:'Bold crimson & rose — confident and attention-grabbing.', dots:['#b91c1c','#f87171','#fecaca']},
+  {id:'teal', name:'Teal Steel', desc:'Cyan & teal — clean, technical and refreshing.', dots:['#0e7490','#06b6d4','#a5f3fc']},
+  {id:'slate', name:'Slate Gray', desc:'Neutral slate — quiet, corporate and versatile.', dots:['#334155','#64748b','#cbd5e1']},
+  {id:'mono', name:'Black & White', desc:'Pure grayscale — maximum contrast, zero distraction.', dots:['#000000','#6b7280','#e5e7eb']}
+];
+const themeGrid = document.getElementById('themeGrid');
+let currentTheme = 'teal';
+function renderThemes(){
+  themeGrid.innerHTML = '';
+  themes.forEach(t=>{
+    const card = el('button', 'theme-card'+(t.id===currentTheme?' on':''));
+    card.innerHTML = `<div class="theme-dots">${t.dots.map(c=>`<i style="background:${c}"></i>`).join('')}</div>
+      <h5>${t.name}</h5><p>${t.desc}</p><span class="check2">&#10003;</span>`;
+    card.addEventListener('click', ()=>{
+      currentTheme = t.id;
+      document.documentElement.setAttribute('data-theme', t.id);
+      renderThemes();
+    });
+    themeGrid.appendChild(card);
+  });
+}
+renderThemes();
+
+/* ---------- Charts ---------- */
+const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const expenditure = [[4,4],[4,4],[4,4],[4,4],[4,4],[34,86],[30,86],[4,4],[4,4],[4,4],[4,4],[4,4]];
+const expWrap = document.getElementById('chartExpenditure');
+expenditure.forEach((pair,i)=>{
+  const g = el('div','mgroup');
+  const active = pair[1] > 10;
+  g.innerHTML = `<div class="b" style="height:${pair[0]}%; background:${active?'#f59e0b':'var(--line)'}"></div>
+                 <div class="b" style="height:${pair[1]}%; background:${active?'#3b82f6':'var(--line)'}"></div>
+                 <span class="mlabel">${months[i]}</span>`;
+  expWrap.appendChild(g);
+});
+const joinExit = [[63,55],[45,30],[75,63],[70,72],[80,95],[100,68],[70,52],[62,48],[0,0],[0,0],[0,0],[0,0]];
+const jeWrap = document.getElementById('chartJoinExit');
+joinExit.forEach((pair,i)=>{
+  const g = el('div','mgroup');
+  g.innerHTML = `<div class="b" style="height:${pair[0]}%; background:#34d399"></div>
+                 <div class="b" style="height:${pair[1]}%; background:#fb7185"></div>
+                 <span class="mlabel">${months[i]}</span>`;
+  jeWrap.appendChild(g);
+});
+
+/* ---------- Table data ---------- */
+const payableGroups = [
+  {hq:'Hyderabad HQ', units:18, subtotal:['1,916','₹8.65 L','₹10.20 Cr','₹10.81 Cr','₹12.13 Cr','₹1.32 Cr'],
+   rows:[
+    ['AZISTA - AHMEDABAD - DIRECTORS','1','₹0','₹1.79 L','₹1.79 L','₹2.27 L','₹47,726'],
+    ['AZISTA - AHMEDABAD - SATELLITE','160','₹0','₹84.39 L','₹84.39 L','₹93.65 L','₹9.26 L'],
+    ['AZISTA - CORPORATE','75','₹0','₹49.61 L','₹56.51 L','₹66.57 L','₹10.06 L'],
+    ['AZISTA - KUPPAM','7','₹0','₹2.57 L','₹2.57 L','₹2.85 L','₹28,143'],
+    ['AZISTA BST AEROSPACE','7','₹0','₹4.23 L','₹4.23 L','₹4.58 L','₹34,778'],
+    ['AZISTA COMPOSITES','262','₹0','₹1.13 Cr','₹1.13 Cr','₹1.24 Cr','₹10.97 L'],
+    ['AZISTA FMCG AND IM MARKETING SALES','40','₹0','₹26.20 L','₹26.20 L','₹33.00 L','₹6.81 L'],
+   ]},
+  {hq:'Mumbai HQ', units:17, subtotal:['4,331','₹58.86 L','₹13.62 Cr','₹20.68 Cr','₹21.95 Cr','₹1.26 Cr'],
+   rows:[
+    ['MUMBAI - CORPORATE','410','₹4.10 L','₹2.31 Cr','₹2.44 Cr','₹2.58 Cr','₹14.20 L'],
+    ['MUMBAI - RETAIL OPS','1280','₹18.40 L','₹4.05 Cr','₹6.40 Cr','₹6.72 Cr','₹32.60 L'],
+    ['MUMBAI - LOGISTICS','845','₹9.20 L','₹2.55 Cr','₹4.10 Cr','₹4.32 Cr','₹22.10 L'],
+   ]},
+  {hq:'Consultant Network', units:10, subtotal:['65','₹0','₹1.12 Cr','₹1.13 Cr','₹1.13 Cr','₹0'],
+   rows:[
+    ['CONSULTANTS - PAN INDIA','65','₹0','₹1.12 Cr','₹1.13 Cr','₹1.13 Cr','₹0'],
+   ]},
+  {hq:'DIR', units:1, subtotal:['6','₹0','₹73.81 L','₹73.81 L','₹1.31 Cr','₹57.15 L'],
+   rows:[
+    ['DIRECTORS OFFICE','6','₹0','₹73.81 L','₹73.81 L','₹1.31 Cr','₹57.15 L'],
+   ]},
+];
+const tblPayableGrouped = document.getElementById('tbl-payable-grouped');
+payableGroups.forEach((g,gi)=>{
+  const gr = el('tr','group-row');
+  gr.innerHTML = `<td colspan="2"><span class="exp-icon">&#9656;</span>${g.hq} <span class="badge-unit">${g.units} units</span></td>
+    <td>${g.subtotal[0]}</td><td>${g.subtotal[1]}</td><td>${g.subtotal[2]}</td><td>${g.subtotal[3]}</td><td>${g.subtotal[4]}</td><td>${g.subtotal[5]}</td>`;
+  gr.addEventListener('click', ()=>{
+    gr.classList.toggle('open');
+    tblPayableGrouped.querySelectorAll(`tr.sub-${gi}`).forEach(r=>r.classList.toggle('open'));
+  });
+  tblPayableGrouped.appendChild(gr);
+  g.rows.forEach(r=>{
+    const tr = el('tr',`sub-row sub-${gi}`);
+    tr.innerHTML = `<td></td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>`;
+    tblPayableGrouped.appendChild(tr);
+  });
+});
+const totalRow = el('tr','total-row');
+totalRow.innerHTML = `<td colspan="2">Total (46 BUs)</td><td>6,318</td><td>₹67.51 L</td><td>₹25.68 Cr</td><td>₹33.35 Cr</td><td>₹36.51 Cr</td><td>₹3.16 Cr</td>`;
+tblPayableGrouped.appendChild(totalRow);
+
+const tblPayableIndiv = document.getElementById('tbl-payable-individual');
+payableGroups.forEach(g=>{
+  g.rows.forEach(r=>{
+    const tr = el('tr');
+    tr.innerHTML = `<td>${g.hq}</td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>`;
+    tblPayableIndiv.appendChild(tr);
+  });
+});
+
+const jeGroups = [
+  {hq:'Hyderabad HQ', units:18, subtotal:['1,916','<span class="pos">+99</span>','<span class="neg">-41</span>','<span class="pos">+58</span>','₹4.77 Cr','₹1.20 Cr'],
+   rows:[
+    ['AZISTA - AHMEDABAD - SATELLITE · CUSTOMER SUPPORT','25','<span class="pos">+1</span>','<span class="neg">-0</span>','<span class="pos">+1</span>','₹3.76 L','₹0'],
+    ['AZISTA - AHMEDABAD - SATELLITE · ENVIRONMENTAL HEALTH','1','<span class="pos">+1</span>','<span class="neg">-0</span>','<span class="pos">+1</span>','₹8.19 L','₹0'],
+    ['AZISTA - AHMEDABAD - SATELLITE · INFORMATION TECHNOLOGY','6','<span class="pos">+0</span>','<span class="neg">-0</span>','0','₹0','₹0'],
+   ]},
+  {hq:'Mumbai HQ', units:17, subtotal:['4,331','<span class="pos">+257</span>','<span class="neg">-210</span>','<span class="pos">+47</span>','₹9.51 Cr','₹7.86 Cr'],
+   rows:[
+    ['MUMBAI - RETAIL OPS · SALES','1280','<span class="pos">+142</span>','<span class="neg">-118</span>','<span class="pos">+24</span>','₹5.10 Cr','₹4.30 Cr'],
+    ['MUMBAI - LOGISTICS · WAREHOUSE','845','<span class="pos">+81</span>','<span class="neg">-70</span>','<span class="pos">+11</span>','₹2.85 Cr','₹2.44 Cr'],
+   ]},
+  {hq:'DIR', units:1, subtotal:['6','<span class="pos">+0</span>','<span class="neg">-0</span>','0','₹0','₹0'], rows:[
+    ['DIRECTORS OFFICE · ADMIN','6','<span class="pos">+0</span>','<span class="neg">-0</span>','0','₹0','₹0'],
+   ]},
+];
+const tblJeGrouped = document.getElementById('tbl-je-grouped');
+jeGroups.forEach((g,gi)=>{
+  const gr = el('tr','group-row');
+  gr.innerHTML = `<td colspan="2"><span class="exp-icon">&#9656;</span>${g.hq} <span class="badge-unit">${g.units} units</span></td>
+    <td>${g.subtotal[0]}</td><td>${g.subtotal[1]}</td><td>${g.subtotal[2]}</td><td>${g.subtotal[3]}</td><td>${g.subtotal[4]}</td><td>${g.subtotal[5]}</td>`;
+  gr.addEventListener('click', ()=>{
+    gr.classList.toggle('open');
+    tblJeGrouped.querySelectorAll(`tr.jsub-${gi}`).forEach(r=>r.classList.toggle('open'));
+  });
+  tblJeGrouped.appendChild(gr);
+  g.rows.forEach(r=>{
+    const tr = el('tr',`sub-row jsub-${gi}`);
+    tr.innerHTML = `<td></td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>`;
+    tblJeGrouped.appendChild(tr);
+  });
+});
+const jeTotalRow = el('tr','total-row');
+jeTotalRow.innerHTML = `<td colspan="2">Total (36 BUs)</td><td>6,253</td><td><span class="pos">+356</span></td><td><span class="neg">-251</span></td><td><span class="pos">+105</span></td><td>₹14.29 Cr</td><td>₹9.07 Cr</td>`;
+tblJeGrouped.appendChild(jeTotalRow);
+
+const tblJeIndiv = document.getElementById('tbl-je-individual');
+jeGroups.forEach(g=>{
+  g.rows.forEach(r=>{
+    const tr = el('tr');
+    tr.innerHTML = `<td>${g.hq}</td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>`;
+    tblJeIndiv.appendChild(tr);
+  });
+});
+</script>
+</body>
+</html>
